@@ -1,9 +1,7 @@
 import React from "react";
-import CancelButton from "../Utility/UI/CancelButton";
-import SuccessButton from "../Utility/UI/successButton";
+import Button from "../../Shared/Utility/Button";
 
 const Delete = ({ toggleModal, removeUser }) => {
-  
   const closeDeleteConfirmationModal = (aShouldUserRemove) => {
     if (aShouldUserRemove) {
       removeUser();
@@ -14,12 +12,16 @@ const Delete = ({ toggleModal, removeUser }) => {
   return (
     <div className="p-6 rounded-md">
       <p className="mb-4">Are you sure you want to remove this user ?</p>
-      <CancelButton onClick={() => closeDeleteConfirmationModal()}>
-        Cancel
-      </CancelButton>
-      <SuccessButton onClick={() => closeDeleteConfirmationModal(true)}>
-        Delete
-      </SuccessButton>
+      <Button
+        btnType="cancel"
+        btnName="Cancel"
+        onClick={() => closeDeleteConfirmationModal()}
+      ></Button>
+      <Button
+        btnType="success"
+        btnName="Delete"
+        onClick={() => closeDeleteConfirmationModal(true)}
+      ></Button>
     </div>
   );
 };

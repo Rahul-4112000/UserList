@@ -1,8 +1,9 @@
 import React, { useRef, useState } from "react";
 import UserForm from "./UserForm";
 import UserList from "./UserList";
-import Modal from "../Shared/modal";
+import Modal from "../../Shared/UI/Modal";
 import Delete from "./Delete";
+import { v4 as uuidv4 } from "uuid";
 
 const usersListData = [
   {
@@ -43,42 +44,71 @@ const usersListData = [
 ];
 
 const User = () => {
-  const [userList, setUserList] = useState(usersListData);
-  const [userDeleteId, setUserDeleteId] = useState(null);
-  const [existingUser, setExistingUser] = useState(null);
+  const [users, setUsers] = useState(usersListData);
+  const [secUser, setSecUser] = useState({
+    id: null,
+    name: "",
+    email: "",
+    age: "",
+    mobNum: "",
+  });
 
   const userFormDialog = useRef();
   const deleteConfirmDialog = useRef();
+  const selectedUser = useRef();
 
-  const addNewUser = (aUser) => {
-    setUserList((prevUsers) => {
-      return [...prevUsers, aUser];
+  const addNewUser = (aNewUser) => {
+    let newId = uuidv4();
+
+    const updateUserData = { ...aNewUser, id: newId };
+
+    setUsers((prevUsers) => {
+      return [...prevUsers, updateUserData];
     });
   };
 
-  const saveChangesToExistingUser = (aExistingUserId,aUserData) => {
-    const updateUserList = userList.map((user) => {
-      if (user.id === aExistingUserId) {
-        return { ...aUserData };
-      }
-      return user;
+  const saveChangesInUser = (aUpdatedSecUser) => {
+    setUsers((prevUsers) => {
+      const userIndex = prevUsers.findIndex(
+        (user) => user.id === aUpdatedSecUser.id
+      );
+
+      const updatedUsers = [...prevUsers];
+
+      updatedUsers[userIndex] = aUserData;
+
+      return updatedUsers;
     });
-    setUserList(updateUserList);
+  };
+
+  const addUser = (aUserData) => {
+    if (aUserData.id) {
+      saveChangesInUser(aUserData);
+      setSecUser({
+        id: null,
+        name: "",
+        email: "",
+        age: "",
+        mobNum: "",
+      });
+    } else {
+      addNewUser(aUserData);
+    }
+    toggleModal("userForm", false);
   };
 
   const removeUser = () => {
-    setUserList((prevUsers) => {
-      const updateUsers = prevUsers.filter((user) => user.id !== userDeleteId);
-      return updateUsers;
-    });
+    setUsers((prevUsers) =>
+      prevUsers.filter((user) => user.id !== selectedUser.current)
+    );
   };
 
-  const setUserState = (aExistingUser) => {
-    setExistingUser(aExistingUser);
+  const onEdit = (aSecUser) => {
+    setSecUser(aSecUser);
     toggleModal("userForm", true);
   };
 
-  const toggleModal = (aModalName, aShouldModalShow) => {
+  const toggleModal = (aModalName, aIsModalShow) => {
     let ref;
     switch (aModalName) {
       case "userForm":
@@ -89,30 +119,41 @@ const User = () => {
         break;
     }
 
-    aShouldModalShow ? ref.current.showModal() : ref.current.close();
+    aIsModalShow ? ref.current.showModal() : ref.current.close();
   };
 
   const handleDeleteUserId = (aUserId) => {
-    setUserDeleteId(aUserId);
+    selectedUser.current = aUserId;
     toggleModal("deleteConfirmation", true);
   };
+
+  const restUserForm = () => {
+    setSecUser({
+      id: null,
+      name: "",
+      email: "",
+      age: "",
+      mobNum: "",
+    });
+    toggleModal("userForm", false);
+  };
+
 
   return (
     <div>
       <UserList
-        usersList={userList}
-        setUserState={setUserState}
+        usersList={users}
+        onEdit={onEdit}
         toggleModal={toggleModal}
         handleDeleteUserId={handleDeleteUserId}
-        
       />
       <Modal ref={userFormDialog}>
         <UserForm
+          key={secUser.id}
           toggleModal={toggleModal}
-          existingUser={existingUser}
-          setExistingUser={setExistingUser}
-          addNewUser={addNewUser}
-          saveChangesToExistingUser={saveChangesToExistingUser}
+          secUser={secUser}
+          addUser={addUser}
+          onReset={restUserForm}
         />
       </Modal>
       <Modal ref={deleteConfirmDialog}>
@@ -120,6 +161,6 @@ const User = () => {
       </Modal>
     </div>
   );
-}
+};
 
 export default User;
