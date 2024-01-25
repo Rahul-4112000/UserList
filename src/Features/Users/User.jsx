@@ -1,9 +1,8 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import UserForm from "./UserForm";
 import UserList from "./UserList";
-import Modal from "../../Shared/UI/Modal";
 import Delete from "./Delete";
-import { v4 as uuidv4 } from "uuid";
+import { v4 } from "uuid";
 
 const usersListData = [
   {
@@ -24,7 +23,7 @@ const usersListData = [
     id: 3,
     name: "Jaynti Joshi",
     age: 23,
-    email: "joshiJaynti@gmail.com",
+    email: "joshijaynti@gmail.com",
     mobNum: 9898470339,
   },
   {
@@ -45,7 +44,9 @@ const usersListData = [
 
 const User = () => {
   const [users, setUsers] = useState(usersListData);
-  const [secUser, setSecUser] = useState({
+  const [deleteUser, setDeleteUser] = useState(null);
+  const [modal, setModal] = useState(null);
+  const [selUser, setSelUser] = useState({
     id: null,
     name: "",
     email: "",
@@ -53,12 +54,8 @@ const User = () => {
     mobNum: "",
   });
 
-  const userFormDialog = useRef();
-  const deleteConfirmDialog = useRef();
-  const selectedUser = useRef();
-
   const addNewUser = (aNewUser) => {
-    let newId = uuidv4();
+    let newId = v4();
 
     const updateUserData = { ...aNewUser, id: newId };
 
@@ -67,15 +64,15 @@ const User = () => {
     });
   };
 
-  const saveChangesInUser = (aUpdatedSecUser) => {
+  const saveChangesInUser = (aUpdatedSelUser) => {
     setUsers((prevUsers) => {
       const userIndex = prevUsers.findIndex(
-        (user) => user.id === aUpdatedSecUser.id
+        (user) => user.id === aUpdatedSelUser.id
       );
 
       const updatedUsers = [...prevUsers];
 
-      updatedUsers[userIndex] = aUserData;
+      updatedUsers[userIndex] = aUpdatedSelUser;
 
       return updatedUsers;
     });
@@ -84,81 +81,80 @@ const User = () => {
   const addUser = (aUserData) => {
     if (aUserData.id) {
       saveChangesInUser(aUserData);
-      setSecUser({
-        id: null,
-        name: "",
-        email: "",
-        age: "",
-        mobNum: "",
-      });
     } else {
       addNewUser(aUserData);
     }
-    toggleModal("userForm", false);
+    toggleDialogue(null);
   };
 
   const removeUser = () => {
     setUsers((prevUsers) =>
-      prevUsers.filter((user) => user.id !== selectedUser.current)
+      prevUsers.filter((user) => user.id !== deleteUser.id)
     );
+    toggleDialogue(null);
   };
 
-  const onEdit = (aSecUser) => {
-    setSecUser(aSecUser);
-    toggleModal("userForm", true);
+  const onEdit = (aSelUser) => {
+    setSelUser(aSelUser);
+    toggleDialogue("formModal");
   };
 
-  const toggleModal = (aModalName, aIsModalShow) => {
-    let ref;
-    switch (aModalName) {
-      case "userForm":
-        ref = userFormDialog;
-        break;
-      case "deleteConfirmation":
-        ref = deleteConfirmDialog;
-        break;
-    }
-
-    aIsModalShow ? ref.current.showModal() : ref.current.close();
+  const toggleDialogue = (modalName) => {
+    setModal(modalName);
   };
 
-  const handleDeleteUserId = (aUserId) => {
-    selectedUser.current = aUserId;
-    toggleModal("deleteConfirmation", true);
+  const onDeleteUser = (aUser) => {
+    setDeleteUser(aUser);
+    toggleDialogue("deleteModal");
   };
 
-  const restUserForm = () => {
-    setSecUser({
+  const cancelDeleteConfirmation = () => {
+    setDeleteUser(null);
+    toggleDialogue(null);
+  };
+
+  const successDeleteConfirmation = () => {
+    removeUser();
+    setUserDeleteId(null);
+    toggleDialogue(null);
+  };
+
+  const openEmptyUserForm = () => {
+    toggleDialogue("formModal");
+    setSelUser({
       id: null,
       name: "",
       email: "",
       age: "",
       mobNum: "",
     });
-    toggleModal("userForm", false);
   };
 
+  console.log("USER RENDER");
 
   return (
-    <div>
+    <div className="relative">
       <UserList
         usersList={users}
         onEdit={onEdit}
-        toggleModal={toggleModal}
-        handleDeleteUserId={handleDeleteUserId}
+        onDeleteUser={onDeleteUser}
+        onOpenEmptyUserForm={openEmptyUserForm}
       />
-      <Modal ref={userFormDialog}>
+      <dialog open={modal === "formModal"} className="absolute top-[15%]">
         <UserForm
-          key={secUser.id}
-          toggleModal={toggleModal}
-          secUser={secUser}
-          addUser={addUser}
-          onReset={restUserForm}
+          key={selUser.id}
+          selUser={selUser}
+          onAddUser={addUser}
+          toggleDialogue={toggleDialogue}
         />
-      </Modal>
-      <Modal ref={deleteConfirmDialog}>
-        <Delete toggleModal={toggleModal} removeUser={removeUser} />
-      </Modal>
+      </dialog>
+      <dialog open={modal === "deleteModal"} className="absolute top-[50%]">
+        <Delete
+          onCancelDeleteConfirmation={cancelDeleteConfirmation}
+          onSuccessDeleteConfirmation={successDeleteConfirmation}
+          deleteUserName={deleteUser?.name}
+        />
+      </dialog>
     </div>
   );
 };

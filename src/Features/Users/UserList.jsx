@@ -1,7 +1,7 @@
 import React from "react";
 import Button from "../../Shared/Utility/Button";
 
-const UserList = ({ usersList, onEdit, handleDeleteUserId, toggleModal }) => {
+const UserList = ({ usersList, onEdit, onDeleteUser, onOpenEmptyUserForm }) => {
 
 
   const renderUsersData = () => {
@@ -37,7 +37,7 @@ const UserList = ({ usersList, onEdit, handleDeleteUserId, toggleModal }) => {
               </button>
               <button
                 className="cursor-pointer"
-                onClick={() => handleDeleteUserId(id)}
+                onClick={() => onDeleteUser(user)}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -67,7 +67,7 @@ const UserList = ({ usersList, onEdit, handleDeleteUserId, toggleModal }) => {
         btnType="success"
         btnName="Add User"
         styles="self-end"
-        onClick={() => toggleModal("userForm", true)}
+        onClick={onOpenEmptyUserForm}
       ></Button>
       <table className="">
         <thead>

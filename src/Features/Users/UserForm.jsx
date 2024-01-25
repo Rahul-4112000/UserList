@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 
 import Button from "../../Shared/Utility/Button";
+import FormField from "../../Shared/Utility/FormField";
 
-const UserForm = ({addUser, secUser,onReset }) => {
+const UserForm = ({ onAddUser, selUser, toggleDialogue }) => {
   const [userData, setUserData] = useState({
-    id: secUser.id,
-    name: secUser.name,
-    email: secUser.email,
-    age: secUser.age,
-    mobNum: secUser.mobNum,
+    id: selUser.id,
+    name: selUser.name,
+    email: selUser.email,
+    age: selUser.age,
+    mobNum: selUser.mobNum,
   });
   const [errors, setErrors] = useState({});
 
@@ -46,8 +47,11 @@ const UserForm = ({addUser, secUser,onReset }) => {
       newErrors.email = "Email is not valid";
     }
 
+    // validate Age
     if (age === "" || isNaN(age)) {
       newErrors.age = "Age is require";
+    } else if (age < 1 || age > 150) {
+      newErrors.age = "Age is not valid";
     }
 
     //validate mobile number
@@ -66,91 +70,68 @@ const UserForm = ({addUser, secUser,onReset }) => {
     event.preventDefault();
 
     const validationError = userDataValidation();
-
     if (Object.keys(validationError).length !== 0) {
       setErrors(validationError);
       return;
     }
 
-    addUser(userData);
+    onAddUser(userData);
   };
 
-
   return (
-    <form className="w-[450px] mx-auto border-2 p-8" onSubmit={submitUserData}>
+    <form
+      className="w-[450px] mx-auto shadow-2xl border-2 border-white-500 p-8"
+      onSubmit={submitUserData}
+    >
       <div className="mb-5">
-        <label
-          htmlFor="name"
-          className="block mb-2 text-sm font-medium text-gray-900"
-        >
-          Name
-        </label>
-        <input
-          type="text"
-          id="name"
-          value={name}
-          onChange={fillData}
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5"
+        <FormField
+          fillData={fillData}
+          idName="name"
+          labelName="Name"
+          inputType="text"
+          inputValue={name}
+          errorName={errors.name}
         />
-        {errors.name && <span className="text-red-900">{errors.name}</span>}
       </div>
       <div className="mb-5">
-        <label
-          htmlFor="email"
-          className="block mb-2 text-sm font-medium text-gray-900"
-        >
-          Your email
-        </label>
-        <input
-          id="email"
-          type="email"
-          value={email}
-          onChange={fillData}
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 "
-          placeholder="e.g. name@gmail.com"
+        <FormField
+          fillData={fillData}
+          idName="email"
+          labelName="Your email"
+          inputType="text"
+          inputValue={email}
+          errorName={errors.email}
         />
-        {errors.email && <span className="text-red-900">{errors.email}</span>}
       </div>
       <div id="age-mob-container" className="flex gap-6 mb-5">
         <div className="basis-4/12">
-          <label
-            htmlFor="age"
-            className="block mb-2 text-sm font-medium text-gray-900"
-          >
-            Age
-          </label>
-          <input
-            id="age"
-            type="number"
-            min="1"
-            max="150"
-            value={age}
-            onChange={fillData}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5"
+          <FormField
+            fillData={fillData}
+            idName="age"
+            labelName="Age"
+            inputType="number"
+            inputValue={age}
+            errorName={errors.age}
           />
-          {errors.age && <span className="text-red-900">{errors.age}</span>}
         </div>
         <div className="basis-8/12">
-          <label
-            htmlFor="mobile"
-            className="block mb-2 text-sm font-medium text-gray-900"
-          >
-            Mobile Number
-          </label>
-          <input
-            id="mobNum"
-            type="number"
-            value={mobNum}
-            onChange={fillData}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5"
+          <FormField
+            fillData={fillData}
+            idName="mobNum"
+            labelName="Mobile Number"
+            inputType="number"
+            inputValue={mobNum}
+            errorName={errors.mobNum}
           />
-          {errors.mobNum && (
-            <span className="text-red-900">{errors.mobNum}</span>
-          )}
         </div>
       </div>
 
-      <Button btnType="cancel" btnName="Cancel" onClick={onReset}></Button>
+      <Button
+        btnType="cancel"
+        btnName="Cancel"
+        type="button"
+        onClick={() => toggleDialogue(null)}
+      ></Button>
 
       <Button btnType="success" btnName="Save" type="submit">
         Save

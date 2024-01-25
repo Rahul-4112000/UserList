@@ -1,12 +1,7 @@
-import { useState } from "react";
 import User from "./Features/Users/User";
 
 function App() {
-  return (
-    <>
-      <User />
-    </>
-  );
+  return <User />;
 }
 
 export default App;
