@@ -6,6 +6,7 @@ const Delete = ({
   onSuccessDeleteConfirmation,
   deleteUserName
 }) => {
+  console.log('<Delete/>');
   return (
     <div className="p-6 rounded-md shadow-2xl border-2 border-white-500">
       <p className="mb-4">Are you sure you want to remove <strong>{deleteUserName}</strong> ?</p>

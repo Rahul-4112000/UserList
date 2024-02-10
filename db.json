@@ -1,0 +1,18 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Rahul Lakhvara",
+      "age": 23,
+      "email": "rahullaxar786@gmail.com",
+      "mobNum": 6353805737
+    },
+    {
+      "id": "fad7",
+      "name": " Suthar",
+      "email": "sutharsanjay420@gmail.com",
+      "age": 1,
+      "mobNum": 5614298354
+    }
+  ]
+}
