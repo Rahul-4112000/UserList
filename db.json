@@ -1,0 +1,11 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Rahul Lakhvara",
+      "age": 23,
+      "email": "rahullaxar786@gmail.com",
+      "mobNum": 6353805737
+    }
+  ]
+}
