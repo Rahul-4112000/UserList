@@ -19,7 +19,6 @@ const UserForm = ({ onSaveUser, selUser, closeModal }) => {
     setUserData((prevUserData) => {
       let value =
         event.target.id === 'mobNum' || event.target.id === 'age' ? parseInt(event.target.value) : event.target.value;
-      value = value ? value : '';
       return {
         ...prevUserData,
         [event.target.id]: value,
@@ -55,7 +54,7 @@ const UserForm = ({ onSaveUser, selUser, closeModal }) => {
       newErrors.mobNum = 'Mobile number is require';
     } else if (mobNum < 0) {
       newErrors.mobNum = "Mobile Number can't be negative";
-    } else if (!(mobNum.toString().length === 10)) {
+    } else if (mobNum.toString().length !== 10) {
       newErrors.mobNum = 'Mobile Number should have 10 digits';
     }
 
