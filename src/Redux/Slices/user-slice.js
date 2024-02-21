@@ -2,20 +2,36 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const userSlice = createSlice({
   name: 'users',
-  initialState: [],
+  initialState: {
+    users: [],
+    selUser: null,
+    deleteUser: null,
+  },
   reducers: {
     addInitialUsers(state, action) {
-      return action.payload;
+      state.users = action.payload;
     },
     addUser(state, action) {
-      state.push(action.payload);
+      state.users.push(action.payload);
     },
     removeUser(state, action) {
-      return state.filter((user) => user.id !== action.payload);
+      state.users = state.users.filter((user) => user.id !== action.payload);
     },
     updateUserData(state, action) {
-      const userIndex = state.findIndex((user) => user.id === action.payload.id);
-      state[userIndex] = action.payload;
+      const userIndex = state.users.findIndex((user) => user.id === action.payload.id);
+      state.users[userIndex] = action.payload;
+    },
+    addSelUser(state, action) {
+      state.selUser = action.payload;
+    },
+    addDelUser(state, action) {
+      state.deleteUser = action.payload;
+    },
+    closeForm(state) {
+      state.selUser = null;
+    },
+    closeDeleteDialog(state) {
+      state.deleteUser = null;
     },
   },
 });

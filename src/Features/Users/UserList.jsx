@@ -1,21 +1,45 @@
 import React, { memo } from 'react';
 import Button from '../../Shared/Utility/Button';
+import { useDispatch, useSelector } from 'react-redux';
+import { userAction } from '../../Redux/Slices/user-slice';
 
-const UserList = memo(({ usersList, onShowForm, onDeleteUser }) => {
+const UserList = () => {
+  const { users } = useSelector((state) => state.userData);
+  const dispatch = useDispatch();
   console.log('<UserList />');
 
+  const showForm = (aSelUser) => {
+    if (aSelUser) {
+      dispatch(userAction.addSelUser(aSelUser));
+      return;
+    }
+    dispatch(
+      userAction.addSelUser({
+        id: null,
+        name: '',
+        email: '',
+        age: '',
+        mobNum: '',
+      })
+    );
+  };
+
+  const onDeleteUser = (aUser) => {
+    dispatch(userAction.addDelUser(aUser));
+  };
+
   const renderUsersData = () => {
-    return usersList.map((user, serialNo) => {
+    return users.map((user, serialNo) => {
       const { id, name, age, email, mobNum } = user;
       return (
-        <tr key={serialNo} align='center' className='p-4'>
-          <td className='py-2'>{serialNo + 1}</td>
-          <td className='py-2'>{name}</td>
-          <td className='py-2'>{age}</td>
-          <td className='py-2'>{email}</td>
-          <td className='py-2'>+91 {mobNum}</td>
-          <td className='flex gap-4 justify-center py-2'>
-            <button className='cursor-pointer' onClick={() => onShowForm(user)}>
+        <tr key={serialNo} align='center' className='p-4 text-white odd:bg-gray-900  even:bg-gray-800 border-gray-700'>
+          <td className='py-3'>{serialNo + 1}</td>
+          <td className='py-3'>{name}</td>
+          <td className='py-3'>{age}</td>
+          <td className='py-3'>{email}</td>
+          <td className='py-3'>+91 {mobNum}</td>
+          <td className='flex gap-4 justify-center py-2 text-green-500'>
+            <button className='cursor-pointer' onClick={() => showForm(user)}>
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 fill='none'
@@ -54,10 +78,10 @@ const UserList = memo(({ usersList, onShowForm, onDeleteUser }) => {
   };
 
   return (
-    <div className='flex flex-col w-[1000px] m-auto mt-[30px]'>
-      <Button btnType='success' btnName='Add User' styles='self-end' onClick={() => onShowForm()}></Button>
-      <table className=''>
-        <thead>
+    <div className='flex flex-col items-center m-auto pt-12 px-3 md:px-12 relative overflow-x-auto shadow-lg sm:rounded-lg'>
+      <Button btnType='success' btnName='Add User' onClick={() => showForm()}></Button>
+      <table className=' text-gray-500 min-w-[550px] md:w-[768px] lg:w-[1000px]'>
+        <thead className='uppercase bg-gray-700 dark:text-gray-400'>
           <tr>
             <th className='py-4'>SR.</th>
             <th className='py-4'>NAME</th>
@@ -71,6 +95,6 @@ const UserList = memo(({ usersList, onShowForm, onDeleteUser }) => {
       </table>
     </div>
   );
-});
+};
 
 export default UserList;

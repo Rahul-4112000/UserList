@@ -4,7 +4,7 @@ import { uiReducer } from '../Slices/ui-slice';
 
 const store = configureStore({
   reducer: {
-    users: userReducer,
+    userData: userReducer,
     ui: uiReducer,
   },
 });

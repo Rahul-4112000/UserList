@@ -104,13 +104,13 @@ export const UpdateUserFromList = (aUser) => {
         throw new Error("Oops!! Changes can't be saved");
       }
 
-      const addedUser = await response.json();
+      const updatedUser = await response.json();
       dispatch(
         setDialog({
           successMsg: 'Changes saved!!!',
         })
       );
-      dispatch(updateUserData(addedUser));
+      dispatch(updateUserData(updatedUser));
     } catch (err) {
       dispatch(
         setDialog({
@@ -129,6 +129,7 @@ export const UpdateUserFromList = (aUser) => {
 
 export const removeUserFromList = (aUserId) => {
   return async (dispatch) => {
+    console.log(aUserId, 'aUserId');
     dispatch(
       setDialog({
         loading: DIALOG_NAMES.DELETE_DIALOG,
@@ -144,7 +145,7 @@ export const removeUserFromList = (aUserId) => {
         throw new Error("Oops!! User can't be deleted");
       }
 
-      const addedUser = await response.json();
+      await response.json();
       dispatch(
         setDialog({
           successMsg: 'User Deleted!!!',

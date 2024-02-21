@@ -2,8 +2,13 @@ import React, { useState, useEffect } from 'react';
 
 import Button from '../../Shared/Utility/Button';
 import FormField from '../../Shared/Utility/FormField';
+import { UpdateUserFromList, saveUser } from '../../Redux/Slices/user-actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { userAction } from '../../Redux/Slices/user-slice';
 
-const UserForm = ({ onSaveUser, selUser, closeModal }) => {
+const UserForm = () => {
+  const { selUser } = useSelector((state) => state.userData);
+
   const [userData, setUserData] = useState({
     id: selUser.id,
     name: selUser.name,
@@ -12,6 +17,7 @@ const UserForm = ({ onSaveUser, selUser, closeModal }) => {
     mobNum: selUser.mobNum,
   });
   const [errors, setErrors] = useState({});
+  const dispatch = useDispatch();
 
   const { name, email, age, mobNum, id } = userData;
 
@@ -71,6 +77,28 @@ const UserForm = ({ onSaveUser, selUser, closeModal }) => {
 
     onSaveUser(userData);
   };
+
+  const saveNewUser = (aNewUser) => {
+    delete aNewUser.id;
+    dispatch(saveUser(aNewUser));
+  };
+
+  const updateUser = (aUser) => {
+    dispatch(UpdateUserFromList(aUser));
+  };
+
+  const onSaveUser = (aUserData) => {
+    if (aUserData.id) {
+      updateUser(aUserData);
+    } else {
+      saveNewUser(aUserData);
+    }
+  };
+
+  const closeModal = () => {
+    dispatch(userAction.closeForm());
+  };
+
   console.log('<UserForm />');
   return (
     <form className='w-[400px] mx-auto p-8'>

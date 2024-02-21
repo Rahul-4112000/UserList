@@ -6,111 +6,39 @@ import LoadingDialogue from '../../Shared/Utility/LoadingDialogue';
 import Error from '../../Shared/Utility/Error';
 import Modal from '../../Shared/Utility/Modal';
 import { useDispatch, useSelector } from 'react-redux';
-import { uiActions } from '../../Redux/Slices/ui-slice';
-import {
-  DIALOG_NAMES,
-  UpdateUserFromList,
-  fetchUsers,
-  removeUserFromList,
-  saveUser,
-} from '../../Redux/Slices/user-actions';
+import { DIALOG_NAMES, fetchUsers } from '../../Redux/Slices/user-actions';
 const { USER_DIALOG, FORM_DIALOG, DELETE_DIALOG } = DIALOG_NAMES;
-const initialUser = {
-  id: null,
-  name: '',
-  email: '',
-  age: '',
-  mobNum: '',
-};
 
 const User = () => {
-  const users = useSelector((state) => state.users);
+  const { selUser, deleteUser } = useSelector((state) => state.userData);
   const dialog = useSelector((state) => state.ui);
   const dispatch = useDispatch();
-  const [deleteUser, setDeleteUser] = useState(null);
-  const [selUser, setSelUser] = useState(null);
-
+  console.log('<User />');
   //fetch registered users
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
-
-  // common function
-  const closeModal = (key) => {
-    setDeleteUser(null);
-    setSelUser(null);
-    dispatch(uiActions.setDialog({ [key]: false }));
-  };
-
-  // functions for userList
-  const showForm = useCallback((aSelUser) => {
-    if (aSelUser) {
-      setSelUser(aSelUser);
-      return;
-    }
-    setSelUser(initialUser);
-  }, []);
-
-  const onDeleteUser = useCallback((aUser) => {
-    setDeleteUser(aUser);
-  }, []);
-
-  // functions for userForm
-  const saveNewUser = (aNewUser) => {
-    delete aNewUser.id;
-    dispatch(saveUser(aNewUser));
-  };
-
-  const updateUser = (aUser) => {
-    dispatch(UpdateUserFromList(aUser));
-  };
-
-  const onSaveUser = (aUserData) => {
-    if (aUserData.id) {
-      updateUser(aUserData);
-    } else {
-      saveNewUser(aUserData);
-    }
-  };
-
-  // functions for Delete
-  const cancelDeleteOnConfirmation = () => {
-    setDeleteUser(null);
-    closeModal();
-  };
-
-  const DeleteOnConfirmation = () => {
-    dispatch(removeUserFromList(deleteUser.id));
-  };
 
   if (dialog.loading === USER_DIALOG) {
     return <LoadingDialogue />;
   }
 
   if (dialog.error.name === USER_DIALOG) {
-    return <Error errMsg={dialog.error.msg} closeModal={closeModal} />;
+    return <Error errMsg={dialog.error.msg} />;
   }
   return (
-    <div className='relative'>
-      <UserList usersList={users} onShowForm={showForm} onDeleteUser={onDeleteUser} />
+    <div className='relative bg-black h-dvh'>
+      <UserList />
 
       {selUser && (
-        <Modal dialogue={dialog} dialogName={FORM_DIALOG} closeModal={closeModal}>
-          {!dialog.loading && !dialog.successMsg && !dialog.error && (
-            <UserForm selUser={selUser} onSaveUser={onSaveUser} closeModal={closeModal} />
-          )}
+        <Modal dialogue={dialog} dialogName={FORM_DIALOG}>
+          {!dialog.loading && !dialog.successMsg && !dialog.error && <UserForm />}
         </Modal>
       )}
 
       {deleteUser && (
-        <Modal dialogue={dialog} dialogName={DELETE_DIALOG} closeModal={closeModal}>
-          {!dialog.loading && !dialog.successMsg && !dialog.error && (
-            <DeleteModal
-              onCancelDeleteConfirmation={cancelDeleteOnConfirmation}
-              onSuccessDeleteConfirmation={DeleteOnConfirmation}
-              deleteUserName={deleteUser?.name}
-            />
-          )}
+        <Modal dialogue={dialog} dialogName={DELETE_DIALOG}>
+          {!dialog.loading && !dialog.successMsg && !dialog.error && <DeleteModal deleteUserName={deleteUser?.name} />}
         </Modal>
       )}
     </div>
