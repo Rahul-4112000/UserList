@@ -1,12 +1,9 @@
-import React from "react";
+import React from 'react';
 
-function FormField({ fillData, idName, labelName, inputType, inputValue, errorName}) {
+function FormField({ fillData, idName, labelName, inputType, inputValue, errorName }) {
   return (
     <>
-      <label
-        htmlFor={idName}
-        className="block mb-2 text-sm font-medium text-gray-900"
-      >
+      <label htmlFor={idName} className='block text-gray-700 text-sm font-semibold mb-2'>
         {labelName}
       </label>
       <input
@@ -14,9 +11,9 @@ function FormField({ fillData, idName, labelName, inputType, inputValue, errorNa
         onChange={fillData}
         type={inputType}
         value={inputValue}
-        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5"
+        className='outline-none w-full px-4 py-2 border rounded-lg text-gray-700 focus:ring-2 focus:ring-blue-200'
       />
-      {errorName && <span className="text-red-900">{errorName}</span>}
+      {errorName && <p className='text-gray-600 text-sm mb-4'>{errorName}</p>}
     </>
   );
 }

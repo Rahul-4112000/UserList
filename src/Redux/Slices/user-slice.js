@@ -1,11 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit';
+export const initialUser = {
+  id: '',
+  name: '',
+  email: '',
+  age: '',
+  mobNum: '',
+};
 
 const userSlice = createSlice({
   name: 'users',
   initialState: {
     users: [],
-    selUser: null,
+    selUser: initialUser,
     deleteUser: null,
+    selUserIndex: null,
   },
   reducers: {
     addInitialUsers(state, action) {
@@ -32,6 +40,21 @@ const userSlice = createSlice({
     },
     closeDeleteDialog(state) {
       state.deleteUser = null;
+    },
+    setSelUserIndex(state, action) {
+      state.selUserIndex = action.payload;
+    },
+    setNextUser(state) {
+      let nextUserIndex = state.selUserIndex + 1;
+      let user = state.users[nextUserIndex];
+      state.selUser = user;
+      state.selUserIndex = nextUserIndex;
+    },
+    setPrevUser(state) {
+      let prevUserIndex = state.selUserIndex - 1;
+      let user = state.users[prevUserIndex];
+      state.selUser = user;
+      state.selUserIndex = prevUserIndex;
     },
   },
 });

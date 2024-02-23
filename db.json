@@ -1,18 +1,150 @@
 {
   "users": [
     {
-      "id": "510a",
+      "id": "0cd5",
+      "name": "Jaynti Joshi",
+      "email": "JayntiJoshi@gmail.com",
+      "age": 2,
+      "mobNum": 5614298354
+    },
+    {
+      "id": "dd4f",
+      "name": "Rakesh",
+      "email": "rakesh88@gmail.com",
+      "age": 2,
+      "mobNum": 9979576857
+    },
+    {
+      "id": "2565",
       "name": "RAHUL LAKHVARA",
       "email": "rahullaxar786@gmail.com",
       "age": 1,
       "mobNum": 6353805737
     },
     {
-      "id": "71bb",
-      "name": "Rohit ",
+      "id": "d799",
+      "name": "Rohit giri",
       "email": "rohitgiri444@gmail.com",
       "age": 2,
       "mobNum": 7600347360
+    },
+    {
+      "id": "951b",
+      "name": "Jaynti Joshi",
+      "email": "JayntiJoshi@gmail.com",
+      "age": 2,
+      "mobNum": 5614298354
+    },
+    {
+      "id": "5095",
+      "name": "Sanjay Suthar",
+      "email": "sutharsanjay420@gmail.com",
+      "age": 1,
+      "mobNum": 7600347360
+    }
+  ],
+  "credentials": [
+    {
+      "id": "b1dd",
+      "fullName": "Rahul",
+      "email": "rahullaxar786@gmail.com",
+      "password": "Rahul123"
+    },
+    {
+      "id": "3aef",
+      "fullName": "sahil",
+      "email": "temp@gmail.com",
+      "password": "Sahil123"
+    },
+    {
+      "id": "3d99",
+      "fullName": "Rohit",
+      "email": "rohitgiri444@gmail.com",
+      "password": "Rohit123"
+    },
+    {
+      "id": "5511",
+      "fullName": "signUp",
+      "email": "asdf@gmail.com",
+      "password": "Signup123"
+    },
+    {
+      "id": "8e2d",
+      "fullName": "Done",
+      "email": "done@gmai.ocm",
+      "password": "Rahul123"
+    },
+    {
+      "id": "182d",
+      "fullName": "temp",
+      "email": "temp@gmail.com",
+      "password": "Temp1234"
+    },
+    {
+      "id": "4cfa",
+      "fullName": "Rakesh",
+      "email": "mahiyar@avestatechnologies.com",
+      "password": "Rakesh123"
+    },
+    {
+      "id": "d398",
+      "fullName": "Rahul",
+      "email": "rahullaxar786@gmail.com",
+      "password": "Rahul444"
+    },
+    {
+      "id": "5518",
+      "fullName": "www",
+      "email": "ww@gmail.com",
+      "password": "WWWw1212"
+    },
+    {
+      "id": "1311",
+      "fullName": "qwer",
+      "email": "adsf@gmail.com",
+      "password": "Wqwert1234"
+    },
+    {
+      "id": "1000",
+      "fullName": "hi",
+      "email": "hell@gmail.com",
+      "password": "hellA123"
+    },
+    {
+      "id": "0cc2",
+      "fullName": "finally",
+      "email": "asdf@gmail.com",
+      "password": "Tempo1234"
+    },
+    {
+      "id": "2c7d",
+      "fullName": "afds",
+      "email": "mahiyar@avestatechnologies.com",
+      "password": "afsdA123"
+    },
+    {
+      "id": "7e29",
+      "fullName": "New",
+      "email": "napope2386@introace.com",
+      "password": "New12345"
+    },
+    {
+      "id": "aab7",
+      "fullName": "New",
+      "email": "adsf@gmail.com",
+      "password": "Adasf123"
+    },
+    {
+      "id": "8e7b",
+      "fullName": "asdf",
+      "email": "rohitgiri444@gmail.com",
+      "password": "asdfS131231"
+    },
+    {
+      "id": "7f14",
+      "fullName": "Temp",
+      "email": "temp@gmail.com",
+      "password": "Temp1234"
     }
   ]
 }

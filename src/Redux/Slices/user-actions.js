@@ -1,52 +1,53 @@
-export const DIALOG_NAMES = {
-  USER_DIALOG: 'USER_DIALOG',
-  FORM_DIALOG: 'FORM_DIALOG',
-  DELETE_DIALOG: 'DELETE_DIALOG',
+import { toast } from 'react-toastify';
+import { userAction } from './user-slice';
+import { addCredential } from './credential-slice';
+const { addInitialUsers, addUser, removeUser, updateUserData } = userAction;
+
+const error = (errMsg) => {
+  toast.error(errMsg, {
+    position: 'top-right',
+    theme: 'dark',
+  });
 };
 
-import { uiActions } from './ui-slice';
-import { userAction } from './user-slice';
-const { setDialog } = uiActions;
-const { addInitialUsers, addUser, removeUser, updateUserData } = userAction;
+const success = (successMsg) => {
+  toast.success(successMsg, {
+    position: 'top-right',
+    theme: 'dark',
+  });
+};
+
+export const getCredentials = async () => {
+  const response = await fetch('http://localhost:3000/credentials');
+  const credentials = await response.json();
+  return credentials;
+};
+
+export const sendCredential = async (aSignupUser) => {
+  const response = await fetch('http://localhost:3000/credentials', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(aSignupUser),
+  });
+  const registeredUser = await response.json();
+  return registeredUser;
+};
 
 export const fetchUsers = () => {
   return async (dispatch) => {
-    dispatch(
-      setDialog({
-        loading: DIALOG_NAMES.USER_DIALOG,
-      })
-    );
-
-    try {
-      const response = await fetch('http://localhost:3000/users');
-      if (!response.ok) {
-        throw new Error('Something went wrong while fetching users!!!');
-      }
-      const users = await response.json();
-      dispatch(addInitialUsers(users));
-    } catch (err) {
-      dispatch(
-        setDialog({
-          error: { name: DIALOG_NAMES.USER_DIALOG, msg: err.message },
-        })
-      );
+    const response = await fetch('http://localhost:3000/users');
+    if (!response.ok) {
+      throw new Error('Something went wrong while fetching users!!!');
     }
-    dispatch(
-      setDialog({
-        loading: false,
-      })
-    );
+    const users = await response.json();
+    dispatch(addInitialUsers(users));
   };
 };
 
 export const saveUser = (aUser) => {
   return async (dispatch) => {
-    dispatch(
-      setDialog({
-        loading: DIALOG_NAMES.FORM_DIALOG,
-      })
-    );
-
     try {
       const response = await fetch('http://localhost:3000/users', {
         method: 'POST',
@@ -61,36 +62,16 @@ export const saveUser = (aUser) => {
       }
 
       const addedUser = await response.json();
-      dispatch(
-        setDialog({
-          successMsg: 'New User Added',
-        })
-      );
       dispatch(addUser(addedUser));
+      success('New User Added');
     } catch (err) {
-      dispatch(
-        setDialog({
-          error: { name: DIALOG_NAMES.FORM_DIALOG, msg: err.message },
-        })
-      );
+      error(err.message);
     }
-
-    dispatch(
-      setDialog({
-        loading: false,
-      })
-    );
   };
 };
 
 export const UpdateUserFromList = (aUser) => {
   return async (dispatch) => {
-    dispatch(
-      setDialog({
-        loading: DIALOG_NAMES.FORM_DIALOG,
-      })
-    );
-
     try {
       const response = await fetch(`http://localhost:3000/users/${aUser.id}`, {
         method: 'PUT',
@@ -105,37 +86,16 @@ export const UpdateUserFromList = (aUser) => {
       }
 
       const updatedUser = await response.json();
-      dispatch(
-        setDialog({
-          successMsg: 'Changes saved!!!',
-        })
-      );
+      success('Changes saved!!!');
       dispatch(updateUserData(updatedUser));
     } catch (err) {
-      dispatch(
-        setDialog({
-          error: { name: DIALOG_NAMES.FORM_DIALOG, msg: err.message },
-        })
-      );
+      error(err.message);
     }
-
-    dispatch(
-      setDialog({
-        loading: false,
-      })
-    );
   };
 };
 
 export const removeUserFromList = (aUserId) => {
   return async (dispatch) => {
-    console.log(aUserId, 'aUserId');
-    dispatch(
-      setDialog({
-        loading: DIALOG_NAMES.DELETE_DIALOG,
-      })
-    );
-
     try {
       const response = await fetch(`http://localhost:3000/users/${aUserId}`, {
         method: 'DELETE',
@@ -146,24 +106,10 @@ export const removeUserFromList = (aUserId) => {
       }
 
       await response.json();
-      dispatch(
-        setDialog({
-          successMsg: 'User Deleted!!!',
-        })
-      );
       dispatch(removeUser(aUserId));
+      success('User Deleted!!!');
     } catch (err) {
-      dispatch(
-        setDialog({
-          error: { name: DIALOG_NAMES.DELETE_DIALOG, msg: err.message },
-        })
-      );
+      error(err.message);
     }
-
-    dispatch(
-      setDialog({
-        loading: false,
-      })
-    );
   };
 };

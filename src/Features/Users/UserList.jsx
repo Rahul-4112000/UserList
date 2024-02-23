@@ -1,27 +1,25 @@
-import React, { memo } from 'react';
+import React, { useEffect } from 'react';
 import Button from '../../Shared/Utility/Button';
 import { useDispatch, useSelector } from 'react-redux';
-import { userAction } from '../../Redux/Slices/user-slice';
+import { initialUser, userAction } from '../../Redux/Slices/user-slice';
+import { Link, useNavigate } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import DeleteModal from './DeleteModal';
 
 const UserList = () => {
-  const { users } = useSelector((state) => state.userData);
+  const { users, deleteUser } = useSelector((state) => state.userData);
   const dispatch = useDispatch();
-  console.log('<UserList />');
+  const navigate = useNavigate();
 
-  const showForm = (aSelUser) => {
-    if (aSelUser) {
-      dispatch(userAction.addSelUser(aSelUser));
-      return;
-    }
-    dispatch(
-      userAction.addSelUser({
-        id: null,
-        name: '',
-        email: '',
-        age: '',
-        mobNum: '',
-      })
-    );
+  const showPrefilledForm = (aSelUser, index) => {
+    dispatch(userAction.addSelUser(aSelUser));
+    dispatch(userAction.setSelUserIndex(index));
+    navigate(aSelUser.id);
+  };
+
+  const resetForm = () => {
+    dispatch(userAction.addSelUser(initialUser));
   };
 
   const onDeleteUser = (aUser) => {
@@ -39,7 +37,7 @@ const UserList = () => {
           <td className='py-3'>{email}</td>
           <td className='py-3'>+91 {mobNum}</td>
           <td className='flex gap-4 justify-center py-2 text-green-500'>
-            <button className='cursor-pointer' onClick={() => showForm(user)}>
+            <button className='cursor-pointer' onClick={() => showPrefilledForm(user, serialNo)}>
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 fill='none'
@@ -79,7 +77,11 @@ const UserList = () => {
 
   return (
     <div className='flex flex-col items-center m-auto pt-12 px-3 md:px-12 relative overflow-x-auto shadow-lg sm:rounded-lg'>
-      <Button btnType='success' btnName='Add User' onClick={() => showForm()}></Button>
+      {deleteUser && <DeleteModal />}
+      <ToastContainer />
+      <Link to='new'>
+        <Button btnType='dark' btnName='Add User' onClick={resetForm}></Button>
+      </Link>
       <table className=' text-gray-500 min-w-[550px] md:w-[768px] lg:w-[1000px]'>
         <thead className='uppercase bg-gray-700 dark:text-gray-400'>
           <tr>
