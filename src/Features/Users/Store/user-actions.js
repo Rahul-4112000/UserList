@@ -1,29 +1,17 @@
-import { toast } from 'react-toastify';
 import { userAction } from './user-slice';
-import { addCredential } from './credential-slice';
-const { addInitialUsers, addUser, removeUser, updateUserData } = userAction;
+import { errToaster, successToaster } from '../../../Shared/UI/Toaster';
+const { addInitialUsers, addUser, removeUser, updateUser } = userAction;
 
-const error = (errMsg) => {
-  toast.error(errMsg, {
-    position: 'top-right',
-    theme: 'dark',
-  });
+export const doLogin = async (fullName, password) => {
+  const response = await fetch(`http://localhost:3000/credentials?fullName=${fullName}&&password=${password}`);
+  if (!response.ok) {
+    throw new Error();
+  }
+  const [loginUser] = await response.json();
+  return loginUser;
 };
 
-const success = (successMsg) => {
-  toast.success(successMsg, {
-    position: 'top-right',
-    theme: 'dark',
-  });
-};
-
-export const getCredentials = async () => {
-  const response = await fetch('http://localhost:3000/credentials');
-  const credentials = await response.json();
-  return credentials;
-};
-
-export const sendCredential = async (aSignupUser) => {
+export const doSignup = async (aSignupUser) => {
   const response = await fetch('http://localhost:3000/credentials', {
     method: 'POST',
     headers: {
@@ -58,14 +46,14 @@ export const saveUser = (aUser) => {
       });
 
       if (!response.ok) {
-        throw new Error("Oops!! User can't be add");
+        throw new Error();
       }
 
       const addedUser = await response.json();
       dispatch(addUser(addedUser));
-      success('New User Added');
-    } catch (err) {
-      error(err.message);
+      successToaster('New User Added');
+    } catch {
+      errToaster("Oops!! User can't be add");
     }
   };
 };
@@ -82,14 +70,14 @@ export const UpdateUserFromList = (aUser) => {
       });
 
       if (!response.ok) {
-        throw new Error("Oops!! Changes can't be saved");
+        throw new Error();
       }
 
       const updatedUser = await response.json();
-      success('Changes saved!!!');
-      dispatch(updateUserData(updatedUser));
-    } catch (err) {
-      error(err.message);
+      successToaster('Changes saved!!!');
+      dispatch(updateUser(updatedUser));
+    } catch {
+      errToaster("Oops!! Changes can't be saved");
     }
   };
 };
@@ -102,14 +90,14 @@ export const removeUserFromList = (aUserId) => {
       });
 
       if (!response.ok) {
-        throw new Error("Oops!! User can't be deleted");
+        throw new Error();
       }
 
       await response.json();
-      dispatch(removeUser(aUserId));
-      success('User Deleted!!!');
+      dispatch(removeUser());
+      successToaster('User Deleted!!!');
     } catch (err) {
-      error(err.message);
+      errToaster("Oops!! User can't be deleted");
     }
   };
 };

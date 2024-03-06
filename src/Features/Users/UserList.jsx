@@ -1,29 +1,27 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Button from '../../Shared/Utility/Button';
 import { useDispatch, useSelector } from 'react-redux';
-import { initialUser, userAction } from '../../Redux/Slices/user-slice';
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import DeleteModal from './DeleteModal';
+import { userAction } from './Store/user-slice';
 
 const UserList = () => {
   const { users, deleteUser } = useSelector((state) => state.userData);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const showPrefilledForm = (aSelUser, index) => {
-    dispatch(userAction.addSelUser(aSelUser));
-    dispatch(userAction.setSelUserIndex(index));
+  const showPrefilledForm = (aSelUser, aIndex) => {
+    dispatch(userAction.setSelUser({ selUser: aSelUser, index: aIndex }));
     navigate(aSelUser.id);
   };
 
-  const resetForm = () => {
-    dispatch(userAction.addSelUser(initialUser));
+  const onDeleteUser = (aUser) => {
+    dispatch(userAction.setDelUser(aUser));
   };
 
-  const onDeleteUser = (aUser) => {
-    dispatch(userAction.addDelUser(aUser));
+  const resetSelUser = () => {
+    dispatch(userAction.resetSelUser());
   };
 
   const renderUsersData = () => {
@@ -76,11 +74,11 @@ const UserList = () => {
   };
 
   return (
-    <div className='flex flex-col items-center m-auto pt-12 px-3 md:px-12 relative overflow-x-auto shadow-lg sm:rounded-lg'>
+    <div className='flex flex-col items-center m-auto pt-12 px-3 md:px-12 relative overflow-x-auto sm:rounded-lg'>
       {deleteUser && <DeleteModal />}
       <ToastContainer />
       <Link to='new'>
-        <Button btnType='dark' btnName='Add User' onClick={resetForm}></Button>
+        <Button btnType='dark' btnName='Add User' onClick={resetSelUser}></Button>
       </Link>
       <table className=' text-gray-500 min-w-[550px] md:w-[768px] lg:w-[1000px]'>
         <thead className='uppercase bg-gray-700 dark:text-gray-400'>

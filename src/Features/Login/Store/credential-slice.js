@@ -1,14 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const credential = createSlice({
-  name: 'activeUser',
+  name: 'loggedUser',
   initialState: null,
   reducers: {
-    addCredential(state, action) {
+    setCredential(state, action) {
       return action.payload;
     },
   },
 });
 
-export const { addCredential } = credential.actions;
+export const { setCredential } = credential.actions;
 export const credentialReducer = credential.reducer;

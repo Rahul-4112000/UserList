@@ -13,7 +13,8 @@ const userSlice = createSlice({
     users: [],
     selUser: initialUser,
     deleteUser: null,
-    selUserIndex: null,
+    selUserIndex: -1,
+    loading: false,
   },
   reducers: {
     addInitialUsers(state, action) {
@@ -22,39 +23,50 @@ const userSlice = createSlice({
     addUser(state, action) {
       state.users.push(action.payload);
     },
-    removeUser(state, action) {
-      state.users = state.users.filter((user) => user.id !== action.payload);
+    removeUser(state) {
+      state.users = state.users.filter((user) => user.id !== state.deleteUser.id);
+      state.deleteUser = null;
     },
-    updateUserData(state, action) {
+    updateUser(state, action) {
       const userIndex = state.users.findIndex((user) => user.id === action.payload.id);
       state.users[userIndex] = action.payload;
     },
-    addSelUser(state, action) {
-      state.selUser = action.payload;
+    setSelUser(state, action) {
+      state.selUser = action.payload.selUser;
+      state.selUserIndex = action.payload.index;
     },
-    addDelUser(state, action) {
+    resetSelUser(state) {
+      state.selUser = initialUser;
+    },
+    setDelUser(state, action) {
       state.deleteUser = action.payload;
     },
-    closeForm(state) {
-      state.selUser = null;
-    },
-    closeDeleteDialog(state) {
+    resetDelUser(state) {
       state.deleteUser = null;
     },
-    setSelUserIndex(state, action) {
-      state.selUserIndex = action.payload;
-    },
     setNextUser(state) {
+      if (state.selUserIndex + 1 >= state.users.length) {
+        return;
+      }
       let nextUserIndex = state.selUserIndex + 1;
       let user = state.users[nextUserIndex];
       state.selUser = user;
       state.selUserIndex = nextUserIndex;
     },
     setPrevUser(state) {
+      if (state.selUserIndex - 1 < 0) {
+        return;
+      }
       let prevUserIndex = state.selUserIndex - 1;
       let user = state.users[prevUserIndex];
       state.selUser = user;
       state.selUserIndex = prevUserIndex;
+    },
+    showLoading(state) {
+      state.loading = true;
+    },
+    closeLoading(state) {
+      state.loading = false;
     },
   },
 });

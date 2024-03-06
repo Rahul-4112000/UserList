@@ -1,21 +1,19 @@
 import React from 'react';
 import Button from '../../Shared/Utility/Button';
 import { useDispatch, useSelector } from 'react-redux';
-import { userAction } from '../../Redux/Slices/user-slice';
-import { removeUserFromList } from '../../Redux/Slices/user-actions';
+import { userAction } from './Store/user-slice';
+import { removeUserFromList } from './Store/user-actions';
 
 const DeleteModal = () => {
-  console.log('<Delete/>');
   const { deleteUser } = useSelector((state) => state.userData);
   const dispatch = useDispatch();
 
   const cancelDeleteOnConfirmation = () => {
-    dispatch(userAction.closeDeleteDialog());
+    dispatch(userAction.resetDelUser());
   };
 
   const DeleteOnConfirmation = () => {
     dispatch(removeUserFromList(deleteUser.id));
-    dispatch(userAction.closeDeleteDialog());
   };
 
   return (

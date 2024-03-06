@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Button from '../../Shared/Utility/Button';
 import FormField from '../../Shared/Utility/FormField';
-import { UpdateUserFromList, saveUser } from '../../Redux/Slices/user-actions';
 import { useDispatch, useSelector } from 'react-redux';
-import { userAction } from '../../Redux/Slices/user-slice';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { UpdateUserFromList, saveUser } from './Store/user-actions';
+import { userAction } from './Store/user-slice';
+import { ToastContainer, toast } from 'react-toastify';
+import { errToaster } from '../../Shared/UI/Toaster';
 
 const UserForm = () => {
   const { selUser, selUserIndex, users } = useSelector((state) => state.userData);
@@ -18,6 +20,7 @@ const UserForm = () => {
   const { userId } = useParams();
 
   useEffect(() => {
+    // selUser.id is used to prevent execution when entering directly to /new path after edit mode
     if (selUserIndex >= 0 && selUser.id) {
       setUserData(selUser);
       navigate('/user/' + selUser.id);
@@ -25,12 +28,13 @@ const UserForm = () => {
   }, [selUserIndex]);
 
   useEffect(() => {
-    if (userId && id === '' && users.length) {
-      const selUserIndex = users.findIndex((user) => user.id === userId);
-      dispatch(userAction.addSelUser(users[selUserIndex]));
-      dispatch(userAction.setSelUserIndex(selUserIndex));
+    // here id prevent initial execution
+    if (userId && users.length && id === '') {
+      let index = users.findIndex((user) => user.id === userId);
+      let selUser = users[index];
+      dispatch(userAction.setSelUser({ selUser, index }));
     }
-  }, [dispatch, users]);
+  }, [users]);
 
   const fillData = (event) => {
     setUserData((prevUserData) => {
@@ -87,6 +91,13 @@ const UserForm = () => {
     }
     setErrors(validationError);
 
+    const isUserExist = users.some((user) => {
+      return (user.email === email || user.mobNum === mobNum) && !id;
+    });
+    if (isUserExist) {
+      errToaster('User already exist');
+      return;
+    }
     onSaveUser(userData);
   };
 
@@ -108,27 +119,28 @@ const UserForm = () => {
     navigate('/user');
   };
 
-  const closeModal = () => {
-    dispatch(userAction.closeForm());
+  const resetSelUser = () => {
+    dispatch(userAction.resetSelUser());
   };
 
-  const getNextUser = () => {
+  const setNextUser = () => {
     dispatch(userAction.setNextUser());
   };
 
-  const getPrevUser = () => {
+  const setPrevUser = () => {
     dispatch(userAction.setPrevUser());
   };
 
   return (
     <div className='flex items-center max-w-[700px] m-auto rounded-xl'>
-      {userId && (
+      <ToastContainer />
+      {userId !== 'new' && (
         <Button
           btnName='PREVIOUS'
           btnType='dark'
           styles='disabled:opacity-25'
-          disabled={!selUserIndex && true}
-          onClick={getPrevUser}
+          disabled={!selUserIndex}
+          onClick={setPrevUser}
         />
       )}
       <form className='w-[400px] bg-white mx-auto p-8 shadow-2xl mt-10'>
@@ -174,21 +186,20 @@ const UserForm = () => {
             />
           </div>
         </div>
-
         <Link to='..'>
-          <Button btnType='cancel' btnName='Cancel' type='button' onClick={closeModal}></Button>
+          <Button btnType='cancel' btnName='Cancel' type='button' onClick={resetSelUser}></Button>
         </Link>
         <Button btnType='success' btnName='Save' onClick={submitUserData}>
           Save
         </Button>
       </form>
-      {userId && (
+      {userId !== 'new' && (
         <Button
           btnName='NEXT'
           btnType='dark'
           styles='disabled:opacity-25'
-          disabled={selUserIndex === users.length - 1 && true}
-          onClick={getNextUser}
+          disabled={selUserIndex === users.length - 1}
+          onClick={setNextUser}
         />
       )}
     </div>
